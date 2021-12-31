@@ -201,18 +201,27 @@ client.on('messageCreate', message => {
 client.on('guildMemberAdd', member => {
     let welcomeMsg = getWelcomeMsg(client, member.guild)
     let iswelcomeMsgTrue = getisWelcomeMsgTrue(client, member.guild)
+    let embedColor = getembedColor(client, member.guild)
     if (iswelcomeMsgTrue === true) {
+        const exampleEmbed = new MessageEmbed()
+            .setColor(embedColor)
+            .setTitle(member.user.username + 'has joined the server!');
         if (welcomeMsg.includes("%user.mention%")) {
             welcomeMsg = welcomeMsg.replace("%user.mention%", `<@${member.id}>`)
-            client.channels.cache.get("922212777907605534").send(welcomeMsg)
-        }
-        if (welcomeMsg.includes("%user.name%")) {
-            welcomeMsg = welcomeMsg.replace("%user.name%", `${member.user}`)
-            client.channels.cache.get("922212777907605534").send(welcomeMsg)
-
+            exampleEmbed.setDescription((welcomeMsg))
+            client.channels.cache.get("922212777907605534").send({
+                embeds: [exampleEmbed]
+            })
+        } else if (welcomeMsg.includes("%user.name%")) {
+            welcomeMsg = welcomeMsg.replace("%user.name%", `${member.user.username}`)
+            exampleEmbed.setDescription((welcomeMsg))
+            client.channels.cache.get("922212777907605534").send({
+                embeds: [exampleEmbed]
+            })
         } else {
-            client.channels.cache.get("922212777907605534").send(welcomeMsg)
-          //dove devo guardare
+            client.channels.cache.get("922212777907605534").send({
+                embeds: [exampleEmbed]
+            })
         }
     }
 })
