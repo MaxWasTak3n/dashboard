@@ -1,16 +1,13 @@
-/* Require discord.js and discord-easy-dashboard */
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const path = require ('path');
 const Dashboard = require('discord-easy-dashboard');
 const axios = require("axios");
-
 const discordToken = process.env['DISCORD_TOKEN'];
 const discordSecret = process.env['DISCORD_SECRET']
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 
-/* create the discord client */
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
-/* Initiate the Dashboard class and attach it to the discord client for easy access */
+// initialize dashboard
 client.dashboard = new Dashboard(client, {
 injectCSS:`
 body {
@@ -62,9 +59,6 @@ a:active {
 img {
   border-radius: 50%!important;
 }
-div {
-  align-items: center;
-}
 button {
   align-self: center;
 }
@@ -84,9 +78,14 @@ button {
 .dropdown-item {
   background-color: white!important;
 }
+
+.form-control {
+  height: 40px
+}
+
 `,
-  name: 'Derpy\'s', // Bot's name
-  description: 'Welcome to Derpy\'s dashboard. Here you can control everything!', // Bot's description
+  name: 'Derpy\'s', //Bot Name
+  description: 'Welcome to Derpy\'s dashboard. Here you can control everything!', // Bot Desc
   baseUrl: 'https://o.maxwastak3n.repl.co',
   serverUrl: 'https://discord.gg/EypBUFA3Rm',
   noPortIncallbackUrl: true,
@@ -110,27 +109,31 @@ const getWelcomeMsg = (discordClient, guild) => discordClient.welcomeMsg[guild.i
 const setisWelcomeMsgTrue = (discordClient, guild, value) => discordClient.iswelcomeMsgTrue[guild.id] = value; // Stores the prefix in the client.iswelcomeMsgTrue object
 const getisWelcomeMsgTrue = (discordClient, guild) => discordClient.iswelcomeMsgTrue[guild.id] || false;
 
+const setembedColor = (discordClient, guild, value) => discordClient.embedColor[guild.id] = value; // Stores the prefix in the client.prefixes object
+const getembedColor = (discordClient, guild) => discordClient.embedColor[guild.id] || '#6bbaff';
+
 client.dashboard.addTextInput('Prefix', 'The bot\'s prefix for the server.', validatePrefix, setPrefix, getPrefix);
 
-
-client.dashboard.addTextInput('Welcome Message', 'The message the bot will send when someone joins your server.', validateWelcomeMsg, setWelcomeMsg, getWelcomeMsg);
+client.dashboard.addTextInput('Welcome Message', 'The message the bot will send when someone joins your server.', validateWelcomeMsg, setWelcomeMsg, getWelcomeMsg)
 
 client.dashboard.addBooleanInput('Welcome Message Toggle', 'Toggles wether the welcome command gets triggered when someone joins.', setisWelcomeMsgTrue, getisWelcomeMsgTrue)
+
+client.dashboard.addColorInput('Embed Color', 'The color of the embeds the bot will send.', setembedColor, getembedColor)
 
 client.on('ready', () => console.log(`${client.user.tag} is ready!`));
 
 client.on('messageCreate', message => {
     let prefix = getPrefix(client, message.guild);
-    if (message.content.startsWith(prefix + 'ping')) message.reply('Pong!');
+    if (message.content.startsWith(prefix + 'ping'))
+    message.reply('Pong! ' + client.ws.ping + "ms.");
 });
 
 client.on('messageCreate', message => {
     let prefix = getPrefix(client, message.guild);
-    let welcomeMsg = getWelcomeMsg(client, message.guild)
-    let iswelcomeMsgTrue = getisWelcomeMsgTrue(client, message.guild)
+    let embedColor = getembedColor(client, message.guild)
 
     if (message.content.startsWith(prefix + 'test'))
-https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js
+
     if(iswelcomeMsgTrue === true) {
     message.reply(welcomeMsg);}
 
@@ -168,7 +171,7 @@ https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.
         'x-api-key':'05b0be56-10e1-427f-b0c7-d0c25479c865'
       }}).then(response => {
         const catEmbed = new MessageEmbed()
-        .setColor("#6bbaff")
+        .setColor(embedColor)
         .setTitle("Here's the cat you asked for!")
         .setImage(response['data'][0]['url'])
         .setFooter("Aww")
@@ -178,12 +181,12 @@ https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.
       })
     } 
     
-    else if(message.content.startsWith(prefix + 'pussy')) {
+    else if(message.content.startsWith(prefix + 'pussy')){
       axios.get("https://api.thecatapi.com/v1/images/search", {headers: {
         'x-api-key':'05b0be56-10e1-427f-b0c7-d0c25479c865'
       }}).then(response => {
         const catEmbed = new MessageEmbed()
-        .setColor("#6bbaff")
+        .setColor(embedColor)
         .setTitle("Here's the pussy you asked for!")
         .setImage(response['data'][0]['url'])
         .setFooter("Aww")
@@ -192,6 +195,26 @@ https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.
         message.reply({embeds: [catEmbed]})
       })
     }
+    
 });
 
-client.login(discordToken);
+client.on('guildMemberAdd', member => {
+    let welcomeMsg = getWelcomeMsg(client, member.guild)
+    let iswelcomeMsgTrue = getisWelcomeMsgTrue(client, member.guild)
+    if (iswelcomeMsgTrue === true) {
+        if (welcomeMsg.includes("%user.mention%")) {
+            welcomeMsg = welcomeMsg.replace("%user.mention%", `<@${member.id}>`)
+            client.channels.cache.get("922212777907605534").send(welcomeMsg)
+        }
+        if (welcomeMsg.includes("%user.name%")) {
+            welcomeMsg = welcomeMsg.replace("%user.name%", `${member.user}`)
+            client.channels.cache.get("922212777907605534").send(welcomeMsg)
+
+        } else {
+            client.channels.cache.get("922212777907605534").send(welcomeMsg)
+          //dove devo guardare
+        }
+    }
+})
+
+client.login(discordToken)
