@@ -7,14 +7,21 @@ const discordSecret = process.env['DISCORD_SECRET']
 const fs = require("fs")
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 
+//Login
+client.login(discordToken)
+
+//Command Handler
 module.exports = client;
 
-// initialize dashboard
+//Initialize Dashboard
 client.dashboard = new Dashboard(client, {
 injectCSS:`
 body {
  background-color: #121212;
 }
+h2, p {
+  text-align: center;
+
 .d-grid {
  color: white;
 }
@@ -94,8 +101,8 @@ tr, td, th, tbody, table {
   color: white!important; 
 }
 `,
-  name: 'Derpy', //Bot Name
-  description: 'Welcome to Derpy\'s dashboard. Here you can control everything!', // Bot Description
+  name: 'Derpy\'s', //Bot Name
+  description: 'Welcome to Derpy\'s dashboard. Here you can control everything you need!', // Bot Description
   baseUrl: 'https://dashboard.maxwastak3n.repl.co',
   serverUrl: 'https://discord.gg/EypBUFA3Rm',
   noPortIncallbackUrl: true,
@@ -103,17 +110,16 @@ tr, td, th, tbody, table {
   secret: discordSecret,
 });
 
-// We' ll store the settings of each server here
-
+//We' ll store the settings of each server here
 client.prefixes = {}; 
 client.welcomeMsg = {};
 client.iswelcomeMsgTrue = {};
 client.embedColor = {};
+client.welcomeChannel = {};
 client.commands = new Collection()
 client.aliases = new Collection()
 
 //Validator, Setter and Getter
-
 const validatePrefix = prefix => prefix.length <= 5;
 const setPrefix = (discordClient, guild, value) => discordClient.prefixes[guild.id] = value;
 const getPrefix = (discordClient, guild) => discordClient.prefixes[guild.id] || '!';
@@ -125,38 +131,26 @@ const getWelcomeMsg = (discordClient, guild) => discordClient.welcomeMsg[guild.i
 const setisWelcomeMsgTrue = (discordClient, guild, value) => discordClient.iswelcomeMsgTrue[guild.id] = value;
 const getisWelcomeMsgTrue = (discordClient, guild) => discordClient.iswelcomeMsgTrue[guild.id] || false;
 
-const setwelcomeChannel = (discordClient, guild, value) => discordClient.embedColor[guild.id] = value;
-const getwelcomeChannel = (discordClient, guild) => discordClient.embedColor[guild.id] || '';
+const setwelcomeChannel = (discordClient, guild, value) => discordClient.welcomeChannel[guild.id] = value;
+const getwelcomeChannel = (discordClient, guild) => discordClient.welcomeChannel[guild.id] || '';
 const getSelectorEntries = (discordClient, guild) => guild.channels.cache.map(ch => [ch.id, ch.name]);
 
 const setembedColor = (discordClient, guild, value) => discordClient.embedColor[guild.id] = value;
-const getembedColor = (discordClient, guild) => discordClient.embedColor[guild.id] || '#6bbaff';
+const getembedColor = (discordClient, guild) => discordClient.embedColor[guild.id] || '#74E84A';
 
 //Inputs on the Dashboard
+client.dashboard.addTextInput('Prefix', 'The bot\'s prefix for the server. (Max 5 chars)', validatePrefix, setPrefix, getPrefix);
 
-client.dashboard.addTextInput('Prefix', 'The bot\'s prefix for the server.', validatePrefix, setPrefix, getPrefix);
-
-client.dashboard.addTextInput('Welcome Message', 'The message the bot will send when someone joins your server.', validateWelcomeMsg, setWelcomeMsg, getWelcomeMsg)
+client.dashboard.addTextInput('Welcome Message', 'The message the bot will send when someone joins your server. (Max 2000 chars)', validateWelcomeMsg, setWelcomeMsg, getWelcomeMsg)
 
 client.dashboard.addBooleanInput('Welcome Message Toggle', 'Toggles wether the welcome command gets triggered when someone joins.', setisWelcomeMsgTrue, getisWelcomeMsgTrue)
 
-client.dashboard.addSelector('Welcome Channel', 'The channel where the bot will send the welcome message.', getSelectorEntries, setwelcomeChannel, getwelcomeChannel)
-
 client.dashboard.addColorInput('Embed Color', 'The color of the embeds the bot will send.', setembedColor, getembedColor)
 
- 
-
-client.on('messageCreate', message => {
-    let prefix = getPrefix(client, message.guild);
-    let embedColor = getembedColor(client, message.guild)
-
-    if (message.content.startsWith(prefix + 'test'))
-
-    if(iswelcomeMsgTrue === true) {
-    message.reply(welcomeMsg);}
-
-    else {
-    message.reply(':x: Command not enabled!');}
+//Commands
+client.on('message', message => {
+  let prefix = getPrefix(client, message.guild)
+  let embedColor = getembedColor(client, message.guild)
 
     if(message.content.startsWith(prefix + 'eval')) {
         const [cmd, ...args] = message.content
@@ -219,51 +213,70 @@ client.on('messageCreate', message => {
         .setColor(embedColor)
         .setTitle("Server info for " + message.guild.name)
         	.addFields(
-		{ name: 'Inline field title', value: 'Some value here', inline: true },
-		{ name: 'Inline field title', value: 'Some value here', inline: true },
-	)
+		{ name: 'Created At', value: "" + message.guild.createdAt, inline: true },
+		{ name: 'Owner', value: '<@' + message.guild.ownerId + '>', inline: true })
         .setThumbnail(message.guild.iconURL())
         .setFooter("Requested by " + message.author.tag)
         .setTimestamp();
         message.reply({embeds: [serverInfoEmbed]})
-    } 
-});
-
-client.on('guildMemberAdd', member => {
-    let welcomeMsg = getWelcomeMsg(client, member.guild)
-    let iswelcomeMsgTrue = getisWelcomeMsgTrue(client, member.guild)
-
-    let embedColor = getembedColor(client, member.guild)
-    if (iswelcomeMsgTrue === true) {
-        const exampleEmbed = new MessageEmbed()
-            .setColor(embedColor)
-            .setTitle(member.user.username + ' has joined the server!')
-            .setTimestamp()
-            .setThumbnail(member.user.avatarURL())
-            .setFooter("Welcome!", client.user.avatarURL());
-        if (welcomeMsg.includes("%user.mention%")) {
-            welcomeMsg = welcomeMsg.replace("%user.mention%", `<@${member.id}>`)
-            exampleEmbed.setDescription((welcomeMsg))
-        
-        } if (welcomeMsg.includes("%user.name%")) {
-            welcomeMsg = welcomeMsg.replace("%user.name%", `${member.user.username}`)
-            exampleEmbed.setDescription((welcomeMsg))
-
-        } if (welcomeMsg.includes("%membercount%")) { 
-          welcomeMsg = welcomeMsg.replace("%membercount%", client.guilds.cache.get(member.guild.id).memberCount)
-          exampleEmbed.setDescription((welcomeMsg))
-        }
-        client.channels.cache.get("922212777907605534").send({
-            embeds: [exampleEmbed]
-        })
     }
-})
-
-client.on('ready', () =>
-console.log(`${client.user.tag} is ready!`));
-client.dashboard.on('ready', () => {  client.login(discordToken)
-  console.log(`Dashboard launched on port ${config.port} - ${config.baseUrl}${config.port === 80 ? '' : ':' + config.port}`);
 });
+
+//Welcomer Message
+client.on('guildMemberAdd', member => {
+  let welcomeMsg = getWelcomeMsg(client, member.guild)
+  let iswelcomeMsgTrue = getisWelcomeMsgTrue(client, member.guild)
+  let welcomeChannel = getwelcomeChannel(client, member.guild)
+  let embedColor = getembedColor(client, member.guild)
+
+ if (iswelcomeMsgTrue === true) {
+const exampleEmbed = new MessageEmbed()
+.setColor(embedColor)
+.setTitle(member.user.username + ' has joined the server!')
+.setTimestamp()
+.setThumbnail(member.user.avatarURL())
+.setFooter("Welcome!", client.user.avatarURL());
+
+ if (welcomeMsg.includes("%user.mention%")) {
+welcomeMsg = welcomeMsg.replace("%user.mention%", `<@${member.id}>`)
+exampleEmbed.setDescription((welcomeMsg))}
+        
+ if (welcomeMsg.includes("%user.name%")) {
+welcomeMsg = welcomeMsg.replace("%user.name%", `${member.user.username}`)
+exampleEmbed.setDescription((welcomeMsg))}
+
+ if (welcomeMsg.includes("%membercount%")) { 
+welcomeMsg = welcomeMsg.replace("%membercount%", client.guilds.cache.get(member.guild.id).memberCount)
+exampleEmbed.setDescription((welcomeMsg))}
+
+client.channels.cache.get(welcomeChannel).send({ embeds: [exampleEmbed]})}})
+
+//Goodbye Message
+client.on('guildMemberRemove', member => {
+ let welcomeMsg = getWelcomeMsg(client, member.guild)
+ let iswelcomeMsgTrue = getisWelcomeMsgTrue(client, member.guild)
+ let welcomeChannel = getwelcomeChannel(client, member.guild)
+ let embedColor = getembedColor(client, member.guild)
+
+  if (iswelcomeMsgTrue === true) {
+        const exampleEmbed = new MessageEmbed()
+.setColor(embedColor)
+.setTitle(member.user.username + ' has left the server.')
+.setTimestamp()
+.setThumbnail(member.user.avatarURL())
+.setFooter("Goodbye!", client.user.avatarURL());
+  if (welcomeMsg.includes("%user.name%")) {
+welcomeMsg = welcomeMsg.replace("%user.name%", `${member.user.username}`)
+exampleEmbed.setDescription((welcomeMsg))}
+
+  if (welcomeMsg.includes("%membercount%")) { 
+welcomeMsg = welcomeMsg.replace("%membercount%", client.guilds.cache.get(member.guild.id).memberCount)
+exampleEmbed.setDescription((welcomeMsg))}
+
+client.channels.cache.get(welcomeChannel).send({
+embeds: [exampleEmbed]})}})
+
+client.on('ready', () => console.log(`${client.user.tag} is ready!`));
 
 module.exports.getPrefix = getPrefix;
 module.exports.getembedColor = getembedColor;
@@ -271,5 +284,3 @@ module.exports.getWelcomeMsg = getWelcomeMsg;
 module.exports.getwelcomeChannel = getwelcomeChannel;
   
 require("./handler")(client)
-
-client.login(discordToken)
