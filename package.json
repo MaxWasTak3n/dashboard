@@ -12,7 +12,9 @@
   "dependencies": {
     "axios": "^0.24.0",
     "discord-easy-dashboard": "git+https://github.com/SimonLeclere/discord-easy-dashboard.git",
-    "discord.js": "^13.3.1"
+    "discord.js": "^13.3.1",
+    "glob": "^7.2.0",
+    "util": "^0.12.4"
   },
   "devDependencies": {
     "node": "^16.13.1"
