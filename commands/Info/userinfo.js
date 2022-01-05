@@ -1,38 +1,43 @@
 const { MessageEmbed } = require("discord.js");
+const moment = require("moment")
 
 module.exports = {
     name: "userinfo",
 
-    run: async (client, message, args) => {
-const mainVars = require("../../index")
-    const embedColor = mainVars.getembedColor(client, message.guild)
+run: async (client, message, args) => {
+  const mainVars = require("../../index")
+  const embedColor = mainVars.getembedColor(client, message.guild)
+  const mention = message.mentions.users.first() || message.author;
+  const target = message.guild.members.cache.get(mention.id);
 
-const mention = message.mentions.members.first();
-const lol = args.join().replace(/false/g, "is not");
+  if(!mention) {
+    return message.channel.send("Mention a valid user.");};
 
-if(!args[0]) {
-return message.channel.send("You must mention a member to inspect.")};
+  let userInfoEmbed = new MessageEmbed()
+    .setTitle(`${target.user.username}'s information`)
+    .addFields({
+      name: 'Created At:',
+      value: '`' + `${moment(mention.createdAt).format("MMM Do YYYY, h:mm:ss a")} (${moment(mention.createdAt).startOf('day').fromNow()})` + '`',
+      inline: true
+    },{
+      name: 'Joined At:',
+      value: '`' + `${moment(target.joinedAt).format("MMM Do YYYY, h:mm:ss a")} (${moment(target.joinedAt).startOf('day').fromNow()})` + '`',
+    },{
+      name: 'ID:',
+      value: '`' + `${target.user.id}` + '`',
+      inline: true
+    },{
+      name: 'Is a bot?',
+      value: '`' + `${target.user.bot ? 'Yes' : 'No'}` + '`',
+      inline: true
+    },{
+      name: 'Avatar URL:',
+      value: "[Click me](" + mention.avatarURL() + ")",
+      inline: true
+    })
+    .setFooter("Requested by: " + message.author.tag, message.author.displayAvatarURL())
+    .setColor(embedColor)
+    .setThumbnail(mention.displayAvatarURL({ dynamic: true }))
+    .setTimestamp();
 
-if(!mention) {
-return message.channel.send("Mention a valid user.");};
-
-let userInfoEmbed = new MessageEmbed()
-.setTitle(`${mention.user.username}'s information`)
-.addFields({
-name: 'Created At:',
-value: '`' + `${mention.user.createdAt.toDateString()}` + '`',
-inline: true
-},{
-name: 'ID:',
-value: '`' + `${mention.user.id}` + '`',
-inline: true
-},{
-name: 'Is a bot?',
-value: '`' + `${mention.user.bot ? '✔️' : '❌'}` + '`',
-inline: true
-})
-.setFooter("Requested by: " + message.author.tag, message.author.displayAvatarURL())
-.setColor(embedColor)
-.setTimestamp();
-
-message.reply({ embeds: [userInfoEmbed]});}};
+  message.reply({ embeds: [userInfoEmbed]});}};

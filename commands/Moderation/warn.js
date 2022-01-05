@@ -40,7 +40,7 @@ module.exports = {
         .setColor("RED")]
       });
     } catch(err) {
-      console.log(err)
+      throw(err)
     }
     message.channel.send({ embeds: [new MessageEmbed()
       .setDescription(`Warned ${user} for: "${reason}"`)

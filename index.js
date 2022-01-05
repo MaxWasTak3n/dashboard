@@ -22,109 +22,14 @@ module.exports = client;
 
 //Initialize Dashboard
 client.dashboard = new Dashboard(client, {
-injectCSS:`
-body {
- background-color: #121212;
-}
-h2, p, div {
-  text-align: center;
-}
-img {
-  max-width: 13rem!important;
-  margin-left: auto;
-  margin-right: auto;
-}
-.d-grid {
- color: white;
-}
-.navbar {
-  background-color: #121212!important;
-}
-.navbar-toggler {
-  background-color: white!important;
-  border-radius: 10%;
-}
-a {
-  color: white!important;
-}
-p {
- color: white;
-}
-h2 {
- color: white;
-}
-h1 {
- color: white;
-}
-a:active {
- color: white!important;
-}
-.card {
- background-color: #121212
-}
-.card-body {
- color: white;
-}
-.btn {
-  background-color: white!important;
-  border-color: white!important;
-  color: black!important;
-}
-.text-white {
-  color: black!important;
-}
-img {
-  border-radius: 50%!important;
-}
-button {
-  align-self: center;
-}
-.alert-success {
-  background-color: white;
-  color: black;
-  border-color: white;
-}
-.alert-danger {
-  background-color: white;
-  color: black;
-  border-color: white;
-}
-.dropdown-item {
-  color: black!important;
-}
-.dropdown-item {
-  background-color: white!important;
-}
-
-.form-control {
-  height: 40px
-}
-.form-control-color {
-  width: 3rem;
-  padding: 0rem; w
-  height: 1.7rem!important;
-  border-color: #121212
-}
-tr, td, th, tbody, table { 
-  color: white!important; 
-}
-::-webkit-scrollbar {
-  width: 7px;
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgb(175, 175, 175);
-  border-radius: 8px;
-}
-`,
-  name: 'Derpy\'s', //Bot Name
+  name: 'Derpy', //Bot Name
   description: 'Welcome to Derpy\'s dashboard. Here you can control everything you need!', // Bot Description
   baseUrl: 'https://dashboard.maxwastak3n.repl.co',
   serverUrl: 'https://discord.gg/EypBUFA3Rm',
   noPortIncallbackUrl: true,
   faviconPath: path.join(__dirname, 'assets', 'conecat-pfp.png'),
   secret: discordSecret,
+  theme: path.join(__dirname, 'theme'),
 });
 
 //We' ll store the settings of each server here
@@ -132,6 +37,7 @@ client.prefixes = {};
 client.welcomeMsg = {};
 client.iswelcomeMsgTrue = {};
 client.embedColor = {};
+client.welcomeChannel = {};
 client.commands = new Collection()
 client.aliases = new Collection()
 
@@ -150,12 +56,11 @@ const getisWelcomeMsgTrue = (discordClient, guild) => discordClient.iswelcomeMsg
 const setembedColor = (discordClient, guild, value) => discordClient.embedColor[guild.id] = value;
 const getembedColor = (discordClient, guild) => discordClient.embedColor[guild.id] || '#74E84A';
 
-// const getSelectorEntries = (client, guild) => guild.roles.cache.map(role => [role.id, role.name]);
-// const setWelcomeChannel = (client, guild, value) => client.db.set(`${guild.id}.adminRole`, value);
-// const getWelcomeChannel = (client, guild) => {
-// const channelId= client.db.get(`${guild.id}.welcomeChannel`);
-// const channelName = guild.channel.cache.get(channelID)?.name
-// return [channelId, channelName];}; //lascia perdere va
+// const getSelectorEntries = (discordClient, guild) => guild.channels.cache.filter((c) => c.type !== "GUILD_CATEGORY").map(ch => [ch.id, ch.name]);
+// const setWelcomeChannel = (discordClient, guild, value) => discordClient.welcomeChannel[guild.id] = value;
+// const getWelcomeChannel = (discordClient, guild) => {
+//   discordClient.welcomeChannel[guild.id] = value;
+// }
 
 //Inputs on the Dashboard
 client.dashboard.addTextInput('Prefix', 'The bot\'s prefix for the server. (Max 5 chars)', validatePrefix, setPrefix, getPrefix);

@@ -24,7 +24,7 @@ const serverInfoEmbed = new MessageEmbed()
                 inline: true
             }, {
                 name: 'Channel Count:',
-                value: '`' + `${message.guild.channels.cache.size}` + '`',
+                value: '`' + `${message.guild.channels.cache.filter(c => c.type !== "GUILD_CATEGORY").size}` + '`',
                 inline: true
             }, {
                 name: 'Role Count:',
