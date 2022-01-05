@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.24.0",
-    "discord-easy-dashboard": "git+https://github.com/SimonLeclere/discord-easy-dashboard.git",
+    "discord-easy-dashboard": "1.1.1",
     "discord.js": "^13.3.1",
+    "djs-soundboard": "^4.0.4",
     "glob": "^7.2.0",
+    "mongoose": "^6.1.5",
     "util": "^0.12.4"
   },
   "devDependencies": {
@@ -27,5 +29,5 @@
     "url": "https://github.com/MaxWasTak3n/dashboard/issues"
   },
   "homepage": "https://github.com/MaxWasTak3n/dashboard#readme",
-  "description": ""
+  "description": "To create this dashboard me & auoldariu#9987 used 3 packages:   [discord.js](https://www.npmjs.com/package/discord.js), [discord-easy-dashboard](https://www.npmjs.com/package/discord-easy-dashboard) and [axios](https://www.npmjs.com/package/axios)."
 }
