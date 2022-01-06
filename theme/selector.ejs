@@ -1,5 +1,52 @@
 <%- await include("partials/header", { bot, user, path, title: "Select server", is_logged, dashboardDetails, dashboardConfig, hasClientSecret: true }) %>
-
+<style>
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-color: #121212!important;
+    border-radius: 50px;
+    background-color: #333232;
+}
+.card-body {
+color: white;
+background-color: #333232;
+text-align: center;
+border-radius: 50px;
+}
+.btn:active {
+border-color: #333232;
+}
+.dropdown-item:active {
+background-color: #333232;
+}
+.btn-primary:hover {
+background-color: #333232;
+border-color: #333232;
+}
+.btn-success:hover {
+background-color: #333232;
+border-color: #333232;
+}
+h5 {
+margin-top: -30px;
+}
+.btn {
+background-color: #333232;
+border-color: #333232;
+}
+.card-img-top {
+width: 100%;
+transform: scale(0.7);
+border-radius: 50%;
+border-radius: 50px;
+}
+</style>
 <div style="display: flex; flex-wrap: wrap; justify-content: center;">
   <% guilds.forEach(guild => {
       const permsOnGuild = new Perms(guild.permissions.toString());
