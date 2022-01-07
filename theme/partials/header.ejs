@@ -15,19 +15,53 @@ font-family: 'Poppins', sans-serif;
 .btn {
 transition: 0.3s!important;
 }
-.navbar-toggler-icon {
-background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%0, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")!important
+button {
+background-color: white!important;
+border-color: white!important;
+border-radius: 10px;
 }
+.nav-link:hover {
+color: #ffcc4c!important;
+transition: 0.3s!important;
+}
+.nav-link {
+font-weight: 400;
+transition: 0.3s!important;
+}
+.navbar-brand {
+font-weight: 600;
+}
+img {
+  transition: 1s;
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  -ms-transition: 1s;
+  -o-transition: 1s;
+  width: 120px;
+  height: 120px;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+img:hover {
+  transition: 1s;
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  -ms-transition: 1s;
+  -o-transition: 1s;
+  -webkit-transform: rotate(360deg);
+  -moz-transform: rotate(360deg);
+  -o-transform: rotate(360deg);
+  -ms-transform: rotate(360deg);
+  transform: rotate(360deg);
+} 
 </style>
 <body style="background-color: #121212;">
   <nav style="background-color: #121212!important;" class="navbar navbar-expand-lg navbar-light bg-light">
     <div style="color: white;" class="container-fluid">
       <a style="color: white;"class="navbar-brand"><%= bot?.user?.username %></a>
-      <button style="background-color: white;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <ul style="color:white!important; background-color: #333232; border-radius: 0px 0px 5px 5px"; class="navbar-nav me-auto mb-2 mb-lg-0">
           <li style="color: white;" class="nav-item">
             <a style="color: white;" class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
@@ -48,18 +82,13 @@ background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/s
         <% if(hasClientSecret) { %>
           <ul class="navbar-nav">
             <% if (user) { %>
-              <li class="nav-item dropdown">
-                <a style="color:white!important;"class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Logged in as <%= user.username %>#<%= user.discriminator %>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                  <!-- <li><hr class="dropdown-divider"></li> -->
-                  <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                <li style="color:white!important; background-color: #333232; border-radius: 0px 0px 5px 5px;" class="nav-item"><a style="color:white!important" href="/auth/logout" class="nav-link">Logout</a></li>
+                </li>
                 </ul>
               </li>
               </li>
             <% } else { %>
-              <li style="color:white!important" class="nav-item"><a style="color:white!important" href="/auth/login" class="nav-link">Login</a></li>
+              <li style="color:white!important; background-color: #333232; border-radius: 0px 0px 5px 5px;" class="nav-item"><a style="color:white!important" href="/auth/login" class="nav-link">Login</a></li>
             <% } %>
           </ul>
         <% } %>

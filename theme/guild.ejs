@@ -1,5 +1,20 @@
 <%- await include("partials/header", { bot, user, title: `Settings | ${guild.name}`, is_logged, dashboardConfig, hasClientSecret: true }) %>
-
+<style>
+h1, p {
+color: white!important;
+}
+.form-control-color {
+width: 3rem;
+height: 2.5rem;
+padding: .375rem;
+}
+.form-check-label {
+color: white;
+}
+.save-changes {
+color: black!important;
+}
+</style>
 <div class="container-sm center" style="margin-top: 30px;">
   <div class="d-grid gap-2 col-4 mx-auto">
     <% if (alert) { %>
@@ -43,7 +58,7 @@
           <% } %>
       <% } %>
       
-      <br><button type="submit" class="btn btn-success text-white">Save Changes</button>
+      <br><button type="submit" class="btn btn-success text-white save-changes">Save Changes</button>
     </form>
   </div>
 </div>

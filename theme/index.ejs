@@ -1,26 +1,12 @@
 <%- await include("partials/header", { bot, user, title: "Home", is_logged, dashboardDetails, dashboardConfig, hasClientSecret }) %>
 <style>
-p, a {
+p {
 text-align: center!important;
-margin-top: 10p!important;
-}
-.d-grid {
-display: block!important
-}
-.sidebardiv {
-background-color: #333232!important;
-width: 100px;
-border-radius: 5px;
-text-align: center!important;
-margin-left: -130px!important;
 }
 .container-fluid {
-background-color: #333232!important;
+background-color: #333232!timportant;
 margin-top: -8px!important;
-}
-.navbar-toggler {
-background-color: #333232!important;
-border-color: #333232!important;
+
 }
 .header {
 background-color: #333232!important;
@@ -28,34 +14,19 @@ border-color: #333232!important;
 border-radius: 5px;
 width: 700px!important;
 }
-.btn {
-text-align: center!important;
-}
 h2 {
-margin-top: -180px!important;
 font-size: x-large!important;
+margin-top: 0.5cm;
+}
+img {
+transition: 0.3s;
 }
 </style>
-<div class="container-sm center" style="margin-top: 25px;">
-<div class="sidebardiv">
-    <% if(hasClientSecret) { %>
-      <a style="background-color: #333232!important; border-color: #333232!important; color:white!important; margin-top: 2px!important;" class="btn btn-secondary text-white" href="/selector"><%- is_logged ? 'Dash' : 'Login' %></a>
-    <% } %>
-    <br style="padding: 2px;"></br>
-    <a style="background-color: #333232!important; border-color: #333232!important; color:white!important;" class="btn btn-primary text-white" href="<%= dashboardDetails.inviteUrl ? dashboardDetails.inviteUrl : `https://discord.com/oauth2/authorize?client_id=${bot.user.id}&scope=bot&permissions=8` %>">Invite</a>
-    <br style="padding: 2px;"></br>
-    <% if(dashboardDetails.serverUrl) { %>
-      <a style="background-color: #333232!important; border-color: #333232!important; color:white!important;" class="btn btn-warning" href="<%= dashboardDetails.serverUrl %>">Server</a>
-    <% } %>
-    </div>
-  <div class="d-grid gap-2 col-6 mx-auto header">
-    <h2 class="welcome" style="text-align: center; color:white!important;">Welcome to <%= dashboardDetails.name %>'s Dashboard!</h2>
-    
-    <% if(dashboardDetails.description) { %>
-      <p style="text-align: center; color:white;">Here you can control everything.</p>
-    <% } %>
-</div>
 
-  </div>
-</div>
+      <div class="im-going-insane">
+    <h2 style="text-align: center; color:white!important;">Welcome to <%= dashboardDetails.name %>'s Dashboard!</h2>
+    
+      <p style="text-align: center; color:white;">Here you can control everything.</p>
+      </div>
+<img src="https://cdn.discordapp.com/avatars/905420513021681704/23ae485cb39765cdb38447c8a728fec3.webp">
 <%- await include("partials/footer") %>

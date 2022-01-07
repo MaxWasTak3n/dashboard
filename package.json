@@ -17,6 +17,7 @@
     "glob": "^7.2.0",
     "moment": "^2.29.1",
     "mongoose": "^6.1.5",
+    "node-fetch": "^2.6.6",
     "util": "^0.12.4"
   },
   "devDependencies": {
